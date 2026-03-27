@@ -1,0 +1,144 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "SparrowOrcinus"
+dynamic = ["version"]
+description = 'The namespace package for Kenji (Sparrow) Emerson.'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Sparrow", email = "psmd.iberutaru@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+
+]
+
+[project.urls]
+Documentation = "https://github.com/unknown/sparroworcinus#readme"
+Issues = "https://github.com/unknown/sparroworcinus/issues"
+Source = "https://github.com/unknown/sparroworcinus"
+
+
+[tool.hatch.version]
+path = "src/SparrowOrcinus/__version__.py"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/SparrowOrcinus"]
+
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pyinstaller",
+    "coverage[toml]>=7.3.4",
+    "pytest>=8.1.0",
+    "black[jupyter]>=24.4.0",
+    "pylint[spelling]>=4.0.1",
+    "pyright>=1.1.400",
+    "ruff>=0.7.0",
+    "sphinx>=7.2.6",
+    "sphinx-book-theme>=1.1.0",
+]
+[tool.hatch.envs.default.scripts]
+build = [
+    "hatch clean",
+    "hatch build"
+]
+
+test = "pytest tests"
+format = [
+    "black . --enable-unstable-feature=string_processing",
+    "black .",
+]
+check = [
+    "ruff check src",
+    "pylint src",
+    "pyright src",
+]
+checkfix = [
+    "format",
+    "ruff check src --fix",
+    "format",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.14"]
+
+
+
+# Environment coding tools.
+# Black...
+[tool.black]
+target-version = ["py311"]
+line-length = 80
+preview = true
+
+
+# Ruff...
+[tool.ruff]
+target-version = "py311"
+line-length = 80
+output-format = "concise"
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    # Allow non-abstract empty methods in abstract base classes.
+    "B027",
+    # Allow boolean positional values in function declarations and calls, 
+    # like `dict.get(... True)`. We ignore all of the rules regarding boolean 
+    # positional traps, because generally, it is a non-issue.
+    "FBT",
+    # Incompatabilies; these are objectively wrong.
+    "D203", "D213",
+    # Allow variable assignment for return. It is easier to find and follow the
+    # return path.
+    "RET504",
+    # Sometimes there are actual reasons for having a lot of arguments.
+    "PLR0913",
+    # Our file paths are better represented as base strings, we do not ever
+    # need to overcomplicate our paths with OOP. As such, suggestions to 
+    # use pathlib really is not needed.
+    "PTH",
+]
+unfixable = [
+]
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
+# Pyright...
+[tool.pyright]
+include = ["src"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+]
+ignore = [
+    "src/gui/qtui",
+]
+defineConstant = { DEBUG = true }
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.11"
+pythonPlatform = "All"
+
+executionEnvironments = [
+
+]
+typeCheckingMode = "basic"
